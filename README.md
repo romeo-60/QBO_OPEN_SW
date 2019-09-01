@@ -1,2 +1,4 @@
 # mat_15
-Gioco  python
+Gioco  scritto in pyhton
+grafica trinket
+
