@@ -1,4 +1,4 @@
-# mat_15
-Gioco  scritto in pyhton
-grafica trinket
+# QBO_OPEN_SW
+QBO robot system in Raspberry Pi devices for test.
+  BETA VERSION 01.0
 
