@@ -1,5 +1,6 @@
-#!/usr/bin/env python2
+#!/usr/bin/python3 
 # -*- coding: latin-1 -*-
+#--- software modified by Romeo Ceccato ---
 
 import argparse
 import serial
@@ -38,9 +39,9 @@ def ChangePortFwd(cmd, value):
 	fwd_en = value & 1
 
 	if fwd_en != 0:
-		print "USB to Servo port forwarding enabled", fwd_en
+		print ("USB to Servo port forwarding enabled", fwd_en)
 	else:
-		print "USB to Servo port forwarding disabled", fwd_en
+		print ("USB to Servo port forwarding disabled", fwd_en)
 
 	HeadCtrl.GetHeadCmd(cmd, [device, fwd_en])
 	time.sleep(.1)
@@ -51,10 +52,10 @@ def ChangeServoEnable(device, cmd, value):
 	servo_en = value & 1
 
 	if servo_en != 0:
-		print "Servo", device, "enabled"
+		print ("Servo", device, "enabled")
 
 	else:
-		print "Servo", device, "disabled"
+		print ("Servo", device, "disabled")
 
 	HeadCtrl.GetHeadCmd(cmd, [device, servo_en])
 	time.sleep(.1)
@@ -84,7 +85,7 @@ def GetServoLimits(cmd, device):
 def ChangeLimit(device, cmd, value):
 
 	limit = GetServoLimits(cmd, device)
-	print "Present Limit ", limit
+	print ("Present Limit ", limit)
 
 	time.sleep(0.1)
 	HeadCtrl.GetHeadCmd("SET_SERVO_LED", [device, 1])
@@ -94,9 +95,9 @@ def ChangeLimit(device, cmd, value):
 	newLimit = GetServoLimits(cmd, device)
 
 	if newLimit == value:
-		print"Limit changed!"
+		print ("Limit changed!")
 
-	print "New Limit", newLimit
+	print ("New Limit", newLimit)
 	time.sleep(.5)
 	HeadCtrl.GetHeadCmd("SET_SERVO_LED", [device, 0])
 
@@ -111,11 +112,11 @@ elif args.device == 1 or args.device == 2:
 		if args.param == 1 or args.param == 2:
 			ChangeDeviceID(args.device, args.command, args.param)
 		else:
-			print "Bad setting new device number", args.param
+			print ("Bad setting new device number", args.param)
 
 	elif args.command == "SET_SERVO_CW_LIM" or args.command == "SET_SERVO_CCW_LIM":
 		if args.param > 1023:
-			print "Bad setting angle limit"
+			print ("Bad setting angle limit")
 		else:
 			ChangeLimit(args.device, args.command, args.param)
 
