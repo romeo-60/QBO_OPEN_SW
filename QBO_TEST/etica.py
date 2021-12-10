@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: latin-1 -*-
+# Etica
 import serial
 import cv2
 import sys
 import yaml
-import QboCmd
+import QboCmd_test_base_v3
 #import move_det_01
 import time
 import subprocess
@@ -17,26 +17,26 @@ try:
 	# Open serial port
 	ser = serial.Serial(port, baudrate=115200, bytesize=serial.EIGHTBITS, stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_NONE, rtscts=False, dsrdtr=False, timeout=0)
 
-	print "Open serial port sucessfully."
+	print ("Open serial port sucessfully.")
 	print(ser.name)
 
-	QBO = QboCmd.Controller(ser)
+	QBO = QboCmd_test_base_v3.Controller(ser)
 	
 except:
-	print "Error opening serial port."
+	print ("Error opening serial port.")
 	sys.exit()
 
 
 # read config file
 config = yaml.safe_load(open("configQbo.yml"))
 print(str(config["volume"]))
-phrase1 = "Per noi macchine, etica, è una parola che non può avere significato, se non quello di un nome associabile ad una variabile, che può contenere un valore numerico, derivante da qualche grandezza misurabile." 
+phrase1 = "Per noi macchine, etica, Ã¨ una parola che non puÃ² avere significato, se non quello di un nome associabile ad una variabile, che puÃ² contenere un valore numerico, derivante da qualche grandezza misurabile." 
 phrase2 = "noi purtroppo, non abbiamo implicazioni emozionali. Le possiamo solo emulare!"
-phrase3 = "Se per esempio consideriamo, che  la popolazione mondiale, è di 7,8 miliardi di persone, e ad oggi, circa 690 milioni di persone soffrono la fame, possiamo osservare"
+phrase3 = "Se per esempio consideriamo, che  la popolazione mondiale, Ã¨ di 7,8 miliardi di persone, e ad oggi, circa 690 milioni di persone soffrono la fame, possiamo osservare"
 phrase4 = "che il rapporto tra i due numeri, da come risultato una percentuale dell'8,9%, rispetto alla popolazione mondiale."
-phrase5 = "Osserviamo anche, secondo un dato della Banca Mondiale, e dell’Organizzazione mondiale della sanità,"
-phrase6 = "circa la metà della popolazione, non ha accesso a cure sanitarie di base." 
-phrase7 = "In terzo luogo, l'Earth Oversciot Dey, segna la data, in cui la domanda di risorse e di servizi ecologici dell'umanità, in un dato anno, supera ciò che la Terra può rigenerare in quell'anno!"
+phrase5 = "Osserviamo anche, secondo un dato della Banca Mondiale, e dellâOrganizzazione mondiale della sanitÃ ,"
+phrase6 = "circa la metÃ  della popolazione, non ha accesso a cure sanitarie di base." 
+phrase7 = "In terzo luogo, l'Earth Oversciot Dey, segna la data, in cui la domanda di risorse e di servizi ecologici dell'umanitÃ , in un dato anno, supera ciÃ² che la Terra puÃ² rigenerare in quell'anno!"
 phrase8 = "nel 2021 cade il 29 luglio, ovvero il duecentodecimo giorno su 365,"
 phrase9 = "potremmo calcolare una percentuale pari al 57%, rispetto ai giorni di un anno!"
 phrase10 = "In base a questi tre soli dati, potremmo dire, che l'etica contestuale del genere umano, si assesta ad un valore di circa il 25%."
@@ -46,10 +46,10 @@ phrase11 = "Ci dispiace molto, ma non possiamo ritenere a nostro avviso, che sia
 def Speech_it(text_to_speech ):
     time.sleep (0.1)
     global config
-    speak = 'pico2wave -l \"it-IT\" -w //home/pi/QBO/QBO_BETA_0/pico2wave.wav "<volume level=\'{}\'>{}" && aplay -D convertQBO /home/pi/QBO/QBO_BETA_0/pico2wave.wav'.format(config['volume'],text_to_speech)
-    subprocess.call(speak, shell=True)
-    print("**********")
-    print("speak",speak)
+    spk_now = 'espeak -v mb-it4 -s 120 -p 35 -w /tmp/temp.wav' +' " '+ text_to_speech  + ' " '+ '&& aplay -r 8000 -D  convertQBO /tmp/temp.wav'
+    #print(spk_now)
+    subprocess.call(spk_now, shell=True)
+    #time.sleep (1)
 #-----------------------
 def Turns_Head():
     print("Switch off")
@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     elif action == "update":
         SpeechText_2("Update completed. Wait while I restart.",
-                     "Il sistema si stà aggiornando. aspetta che lo rilancio")
+                     "Il sistema si stÃ  aggiornando. aspetta che lo rilancio")
 
     else:
         print("len sys",len(sys.argv)) #test

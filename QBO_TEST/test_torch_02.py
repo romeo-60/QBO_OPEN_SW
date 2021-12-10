@@ -19,7 +19,7 @@ print(dataset.columns)
 all_data = dataset['n_cycle'].values.astype(float)
 print(all_data)
 #configurazione train data e test data
-test_data_size = 15
+test_data_size = 10
 train_data = all_data[:-test_data_size]
 test_data = all_data[-test_data_size:]
 print ('--- len train and test data ---')
@@ -39,7 +39,7 @@ print('-----torch.FloatTensor--------')
 print (train_data_normalized)
 print('---------------------')
 # divisione tuple  di numeri
-train_window = 15
+train_window = 10
 # gestore di sequenza
 def create_inout_sequences(input_data, tw):
     inout_seq = []
@@ -78,7 +78,7 @@ print('----- modello ----')
 print(model)
 #-----------------------
 # fase di addestramento
-epochs = 150
+epochs = 100
 
 for i in range(epochs):
     for seq, labels in train_inout_seq:
@@ -98,7 +98,7 @@ print ('°°°°°°°°°°°°°°°°°')
 print(f'epoch: {i:3} loss: {single_loss.item():10.10f}')
 print('°°°°°°°°°°°°°°°°°°°')
 #--------------
-fut_pred = 15
+fut_pred = 10
 
 test_inputs = train_data_normalized[-train_window:].tolist()
 print(test_inputs)
@@ -118,6 +118,7 @@ print(test_inputs[fut_pred:])
 actual_predictions = scaler.inverse_transform(np.array(test_inputs[train_window:] ).reshape(-1, 1))
 print ('***** ACTUAL PREDICTIONS')
 print(actual_predictions)
+x = np.arange (40, 50, 1)
 # grafi dati 
 #plt.title('sequences vs predictions')
 #plt.ylabel('Total cycles')
@@ -134,6 +135,6 @@ plt.grid(True)
 plt.autoscale(axis='x', tight=True)
 plt.plot(dataset['n_cycle'][-train_window:])
 plt.plot(x,actual_predictions)
-plt.legend()
-plt.savefig("Seq_predict.png")
+#plt.scatter(actual_predictions,x, label="n_cycles", c='blue', marker='o', s=2)
+#plt.legend()
 plt.show()

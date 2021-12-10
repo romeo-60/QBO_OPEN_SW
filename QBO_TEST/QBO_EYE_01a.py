@@ -1,13 +1,16 @@
-#!/usr/bin/python3.7 
+#!/usr/bin/python3
 from matplotlib import pyplot as plt
 import numpy as np
 import cv2 as cv
+import sys
+
 print ("ok")
 print("----------")
 #-------------------------
-eye_01= cv.imread("O25.png")
-print (eye_01)
-#cv.imshow("image", eye_01) 
+eye_01= cv.imread(cv.samples.findFile("d25.png"))
+if eye_01 is None:
+    sys.exit("Could not read the image.")
+cv.imshow("image", eye_01)
 #-------------------------
 # conversione gray scale
 img= cv.cvtColor(eye_01, cv.COLOR_BGR2GRAY)
@@ -32,13 +35,13 @@ print("gray_image")
 #cv.imshow("image_gray", img)
 #cv.imwrite("eye_G.png", img)
 #----------------------
-fig, ax =plt.subplots(1,1) 
+fig, ax =plt.subplots(1,1)
 plt.title("matrice")
 column_labels=[]
 ax.axis('tight')
 ax.axis('off')
 ax.table(cellText=data, loc = "center")
-plt.show() 
+plt.show()
 #---------------
 cv.waitKey(0)
 cv.destroyAllWindows()

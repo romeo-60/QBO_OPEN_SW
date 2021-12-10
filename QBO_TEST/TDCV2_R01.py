@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: latin-1 -*-
 #it works even if it loses track sometimes (returns to Home)
-import QboCmd
+import QboCmd_test_base_v3
 import serial
-import cv2
+import cv2 as cv
 import numpy as np
 import subprocess
 import time
@@ -14,7 +13,8 @@ port = '/dev/serial0'
 ser = serial.Serial(port, baudrate=115200, bytesize = serial.EIGHTBITS, stopbits = serial.STOPBITS_ONE, parity = serial.PARITY_NONE, rtscts = False, dsrdtr =False, timeout = 0)
 print ("Open serial port sucessfully.")
 print(ser.name)
-QBO = QboCmd.Controller(ser)
+QBO = QboCmd_test_base_v3.Controller(ser)
+print (ser)
 #---------------------------
 # constant for the movement
 Ksp = 100 #speed = 100
@@ -61,25 +61,25 @@ touch_str = ''
 config = yaml.safe_load(open("configQbo.yml"))
 print(str(config["volume"]))
 phrases = (
-    "ciao, ti ho visto!", 
-    "buogiorno!", 
-    "heilà", 
-    "scusa, ero distratto! adesso ti ho visto",
-    "ci sono!adesso ti vedo!",
-    "ciao!",
-    "guarda che ti vedo sai?",
-    "eccoti quì!",
-    "non è stato facile, ma ti ho visto!",
-    "che piacere vederti"
+    "ciao, ti ho visto! Vuoi dirmi qualcosa?", 
+    "buogiorno! cosa facciamo?", 
+    "heilà, dimmi!", 
+    "scusa, ero distratto! adesso ti ho visto, ti ascolto!",
+    "ci sono! adesso ti vedo! cosa posso fare?",
+    "ciao! vuoi che faccia qualcosa?",
+    "guarda che ti vedo sai? ti ascolto anche!",
+    "eccoti quì! finalemte, dimmi, ti posso essere utile?",
+    "non è stato facile, ma ti ho visto! ti ascolto!",
+    "che piacere vederti, facciamo qualcosa assieme?"
 )
  
 # information on the page https://github.com/opencv/opencv/tree/master/data/haarcascades
-f_faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
-p_faceCascade = cv2.CascadeClassifier("haarcascade_profileface.xml")
+f_faceCascade = cv.CascadeClassifier("/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascades/haarcascade_frontalface_alt2.xml")
+p_faceCascade = cv.CascadeClassifier("/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascades/haarcascade_profileface.xml")
 #----------------------------------
-video_capture = cv2.VideoCapture(0)
-video_capture.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, fw)  
-video_capture.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, fh)
+video_capture = cv.VideoCapture(0)
+video_capture.set(cv.CAP_PROP_FRAME_WIDTH, fw)  
+video_capture.set(cv.CAP_PROP_FRAME_HEIGHT, fh)
 #------test ---------
 QBO.SetMouth(0)
 time.sleep(0.1)
@@ -91,15 +91,17 @@ print ("OK")
 #---------------
 def ServoHead():
     global Xcoor, Ycoor, Xmax, Xmin, Ymax, Ymin, Ksp
+    Xcoor = int(Xcoor)
+    Ycoor = int(Ycoor)    
     if Xcoor < Xmin:
-        Xcoor  = Xmin +1
+        Xcoor  = int(Xmin +1)
     if Xcoor > Xmax:
-        Xcoor = Xmax -1
+        Xcoor = int(Xmax -1)
     #------------------
     if Ycoor < Ymin: 
-        Ycoor = Ymin + 1
+        Ycoor = int (Ymin + 1)
     if Ycoor > Ymax:
-        Ycoor = Ymax -1
+        Ycoor = int (Ymax -1)
     print("Cam_X =",Xcoor)
     time.sleep(0.1)
     QBO.SetServo(1, Xcoor, Ksp)
@@ -107,7 +109,7 @@ def ServoHead():
     print("Cam_Y =",Ycoor)
     QBO.SetServo(2, Ycoor, Ksp)
     time.sleep(1)
-	
+
 #testmove
 ServoHead()
 time.sleep (1)
@@ -117,14 +119,14 @@ def F_capture(video_capture):
     f_i+=1
     # Capture frame-by-frame
     ret, f_frame = video_capture.read()
-    gray = cv2.cvtColor(f_frame, cv2.COLOR_BGR2GRAY)
+    gray = cv.cvtColor(f_frame, cv.COLOR_BGR2GRAY)
     f_face = f_faceCascade.detectMultiScale(
         gray,
         scaleFactor=1.03,
         minNeighbors=1,
         minSize=(60, 60),
-        flags=cv2.cv.CV_HAAR_SCALE_IMAGE
-	)
+        #flags=cv.HAAR_SCALE_IMAGE
+    )
     
     # Draw a rectangle around the faces
     if len(f_face) > 0:
@@ -159,14 +161,14 @@ def P_capture(video_capture):
     p_i+=1
     # Capture frame-by-frame
     ret, p_frame = video_capture.read()
-    gray = cv2.cvtColor(p_frame, cv2.COLOR_BGR2GRAY)
+    gray = cv.cvtColor(p_frame, cv.COLOR_BGR2GRAY)
     p_face = p_faceCascade.detectMultiScale(
         gray,
         scaleFactor=1.03,
         minNeighbors=1,
         minSize=(60, 60),
-        flags=cv2.cv.CV_HAAR_SCALE_IMAGE
-	)
+        #flags=cv.CV_HAAR_SCALE_IMAGE
+    )
     
     # Draw a rectangle around the faces
     if len(p_face) > 0:
@@ -251,12 +253,14 @@ def FaceControl():
         ServoHead()
         
 def Speech_it(text_to_speech ):
-    global config
     time.sleep (1)
-    speak = 'pico2wave -l \"it-IT\" -w //home/pi/QBO/QBO_BETA_0/pico2wave.wav "<volume level=\'{}\'>{}" && aplay -D convertQBO /home/pi/QBO/QBO_BETA_0/pico2wave.wav'.format(config['volume'],text_to_speech)
+    global config
+    speak = 'espeak -v mb-it4 -s 120 -p 35 -w /tmp/temp.wav' + ' " ' + text_to_speech + ' " ' + '&& aplay -r 8000 -D  convertQBO /tmp/temp.wav'
     subprocess.call(speak, shell=True)
     print("**********")
     print("speak",speak)
+    print ("cool listen_r01")
+    import listen_r01
 #-----------------------  
 def WaitForTouch():
     global touch
@@ -268,7 +272,7 @@ def WaitForTouch():
             print("Left Positon")
             QBO.SetServo(1,650, 100)#Axis,Angle,Speed
             time.sleep(1) 
-             			
+            
         elif touch == [2]:
             touch_str = "Touch: up"
             print("Center head")
@@ -284,10 +288,10 @@ def WaitForTouch():
             time.sleep(1) 
             
         if touch == [1] or touch == [2] or touch == [3]:
-			print("touch ",touch)
-		
-	time.sleep(1)
-	#return touch_str
+            print("touch ",touch)
+
+    time.sleep(1)
+    #return touch_str
 
 
 
@@ -300,13 +304,13 @@ while True:
     F_capture(video_capture)
     P_capture(video_capture)
     #cv2.circle(f_frame, f_frameCenter, radius=4, color=(255, 0, 0), thickness=-1)
-    #cv2.imshow('FVideo', f_frame)
+    #cv.imshow('FVideo', f_frame)
     #cv2.circle(p_frame, p_frameCenter, radius=4, color=(0, 255, 0), thickness=-1)
     #cv2.imshow('PVideo', p_frame)
     FaceControl()
     time.sleep(1)
-    WaitForTouch()    
-    if cv2.waitKey(1) & 0xFF == ord('q') : #== ord('q')
+    #WaitForTouch()    
+    if cv.waitKey(1) & 0xFF == ord('q') : #== ord('q')
         break
 
 # When everything is done, release the capture
@@ -315,5 +319,3 @@ cv2.destroyAllWindows()
 QBO.SetNoseColor(0)
 time.sleep(0.5)
 QBO.SetMouth(0)
-
-

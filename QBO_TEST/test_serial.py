@@ -2,7 +2,7 @@ import serial
 import time
 import sys
 #import QboCmd
-import QboCmd_test_base
+import QboCmd_test_base_v3
 
 port = '/dev/serial0'
 
@@ -18,7 +18,7 @@ print ("Open serial port sucessfully.")
 print(ser.name)
 
 #QBO = QboCmd.Controller(ser)
-QBO = QboCmd_test_base.Controller(ser)   
+QBO = QboCmd_test_base_v3.Controller(ser)   
 
 
 print("Blue Nose")

@@ -1,5 +1,5 @@
 #!/usr/bin/python3 
-# -*- coding: utf-8 -*- 
+# MAT 15 GAME
 #Type "copyright", "credits" or "license()" for more information.
 #---gestione matrice per inserimento dati---
 #--- software by Romeo Ceccato ---
