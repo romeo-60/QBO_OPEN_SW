@@ -9,7 +9,7 @@ import time
 #import sys
 print("cv2 verison=",cv.__version__)
 # versione 1
-faceCascade = cv.CascadeClassifier("/usr/local/share/opencv4/haarcascades/haarcascade_frontalface_alt2.xml")
+faceCascade = cv.CascadeClassifier("/home/pi/.local/lib/python3.7/site-packages/cv2/data/haarcascade_frontalface_alt2.xml")
 # versione 2
 #faceCascade = cv.CascadeClassifier("/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascades/haarcascade_frontalface_alt2.xml") 
 #faceCascade = cv.CascadeClassifier("haarcascade_frontalface_alt2.xml")
