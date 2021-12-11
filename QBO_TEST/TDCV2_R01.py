@@ -74,8 +74,8 @@ phrases = (
 )
  
 # information on the page https://github.com/opencv/opencv/tree/master/data/haarcascades
-f_faceCascade = cv.CascadeClassifier("/home/pi/.local/lib/python3.7/site-packages/cv2/data/haarcascade_frontalface_alt2.xml")
-p_faceCascade = cv.CascadeClassifier("/home/pi/.local/lib/python3.7/site-packages/cv2/data/haarcascade_profileface.xml")
+f_faceCascade = cv.CascadeClassifier("/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt2.xml")
+p_faceCascade = cv.CascadeClassifier("/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_profileface.xml")
 #----------------------------------
 video_capture = cv.VideoCapture(0)
 video_capture.set(cv.CAP_PROP_FRAME_WIDTH, fw)  
